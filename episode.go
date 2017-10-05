@@ -21,12 +21,12 @@ type Episode struct {
 	ID                 int      `json:"id"`
 	ImdbID             string   `json:"imdbId"`
 	LastUpdated        int      `json:"lastUpdated"`
-	LastUpdatedBy      string   `json:"lastUpdatedBy"`
+	LastUpdatedBy      int      `json:"lastUpdatedBy"`
 	Overview           string   `json:"overview"`
 	ProductionCode     string   `json:"productionCode"`
-	SeriesID           string   `json:"seriesID"`
+	SeriesID           int      `json:"seriesId"`
 	ShowURL            string   `json:"showURL"`
-	SiteRating         int      `json:"siteRating"`
+	SiteRating         float32  `json:"siteRating"`
 	SiteRatingCount    int      `json:"siteRatingCount"`
 	ThumbAdded         string   `json:"thumbAdded"`
 	ThumbAuthor        int      `json:"thumbAuthor"`
@@ -37,3 +37,8 @@ type Episode struct {
 
 // Episodes rappresent a map of episodes organized by season and episode number
 type Episodes map[int]map[int]Episode
+
+// Empty return true if the Episode's fields are empty
+func (e *Episode) Empty() bool {
+	return e.ID == 0 && e.EpisodeName == ""
+}

@@ -21,6 +21,16 @@ func TestRefreshToken(t *testing.T) {
 	}
 }
 
+func TestGetLanguages(t *testing.T) {
+	c := login(t)
+	languages, err := c.GetLanguages()
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, 23, len(languages))
+	assert.Equal(t, "Chinese", languages[0].EnglishName)
+}
+
 func TestSearch(t *testing.T) {
 	c := login(t)
 	res, err := c.SearchByName("Game of Thrones")
@@ -121,6 +131,22 @@ func TestGetSeriesPosterImages(t *testing.T) {
 	}
 	assert.Equal(t, "posters/121361-1.jpg", s.Images[0].FileName)
 	assert.Equal(t, tvdb.ImageURL(s.Images[0].FileName), "https://thetvdb.com/banners/posters/121361-1.jpg")
+}
+
+func TestGetEpisode(t *testing.T) {
+	c := login(t)
+	s := getSerie(t, c, "Game of Thrones")
+	err := c.GetSeriesEpisodes(&s, url.Values{"airedSeason": {"1"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Empty(t, s.Episodes[1][1].ImdbID)
+	ep := s.Episodes[1][1]
+	err = c.GetEpisode(&ep)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, "tt1480055", ep.ImdbID)
 }
 
 func login(t *testing.T) tvdb.Client {

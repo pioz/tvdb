@@ -58,8 +58,6 @@ The complete __documentation__ can be found [here](https://pioz.github.io/tvdb).
 This wrapper do not coverage all 100% api REST endpoints.
 Missing methods are:
 
-* __Languages__
-    * get: `GET /languages`
 * __Series__
     * filter: `GET /series/{id}/filter`
 * __Updates__

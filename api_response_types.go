@@ -31,3 +31,7 @@ type summaryAPIResponse struct {
 type imagesAPIResponse struct {
 	Data []Image `json:"data"`
 }
+
+type languagesAPIResponse struct {
+	Data []Language `json:"data"`
+}

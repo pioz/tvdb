@@ -56,6 +56,21 @@ func (c *Client) RefreshToken() error {
 	return nil
 }
 
+// GetLanguages returns all avaiable languages
+func (c *Client) GetLanguages() ([]Language, error) {
+	resp, err := c.performGETRequest("/languages", nil)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	data := new(languagesAPIResponse)
+	err = parseResponse(resp.Body, &data)
+	if err != nil {
+		return nil, err
+	}
+	return data.Data, nil
+}
+
 // SearchByName allows the user to search for a series based on the serie name.
 func (c *Client) SearchByName(q string) ([]Series, error) {
 	return c.search(url.Values{"name": {q}})
@@ -180,6 +195,25 @@ func (c *Client) GetSeriesSummary(s *Series) error {
 		return err
 	}
 	s.Summary = data.Data
+	return nil
+}
+
+// GetEpisode retrieve all episode's fields
+func (c *Client) GetEpisode(e *Episode) error {
+	if e.Empty() {
+		return errors.New("The episode is empty")
+	}
+	resp, err := c.performGETRequest(fmt.Sprintf("/episodes/%d", e.ID), nil)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	data := new(episodeAPIResponse)
+	err = parseResponse(resp.Body, &data)
+	if err != nil {
+		return err
+	}
+	*e = data.Data
 	return nil
 }
 
