@@ -1,17 +1,16 @@
-package tvdb
+package tvdb_test
 
 import (
 	"net/url"
+	"os"
 	"testing"
 
+	"github.com/pioz/tvdb"
 	"github.com/stretchr/testify/assert"
 )
 
-const APIKEY string = "6F6E61197C18C895"
-
 func TestLogin(t *testing.T) {
-	c := login(t)
-	assert.NotEmpty(t, c.token)
+	login(t)
 }
 
 func TestRefreshToken(t *testing.T) {
@@ -20,7 +19,6 @@ func TestRefreshToken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.NotEmpty(t, c.token)
 }
 
 func TestSearch(t *testing.T) {
@@ -49,10 +47,10 @@ func TestBestSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.False(t, Error404(err))
+	assert.False(t, tvdb.Error404(err))
 	assert.Equal(t, "Game of Thrones", res.SeriesName)
 	res, err = c.BestSearch("kajdsfhasdkjhfsadkjhfasdkh")
-	assert.True(t, Error404(err))
+	assert.True(t, tvdb.Error404(err))
 }
 
 func TestGetSeries(t *testing.T) {
@@ -122,11 +120,11 @@ func TestGetSeriesPosterImages(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, "posters/121361-1.jpg", s.Images[0].FileName)
-	assert.Equal(t, ImageURL(s.Images[0].FileName), "https://thetvdb.com/banners/posters/121361-1.jpg")
+	assert.Equal(t, tvdb.ImageURL(s.Images[0].FileName), "https://thetvdb.com/banners/posters/121361-1.jpg")
 }
 
-func login(t *testing.T) Client {
-	c := Client{Apikey: APIKEY, Language: "en"}
+func login(t *testing.T) tvdb.Client {
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Language: "en"}
 	err := c.Login()
 	if err != nil {
 		t.Fatal(err)
@@ -134,7 +132,7 @@ func login(t *testing.T) Client {
 	return c
 }
 
-func getSerie(t *testing.T, c Client, name string) Series {
+func getSerie(t *testing.T, c tvdb.Client, name string) tvdb.Series {
 	series, err := c.BestSearch(name)
 	if err != nil {
 		t.Fatal(err)

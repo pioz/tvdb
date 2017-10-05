@@ -1,3 +1,4 @@
+// Package tvdb is cool
 package tvdb
 
 import (
