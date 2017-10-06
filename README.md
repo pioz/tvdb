@@ -46,7 +46,7 @@ func main() {
     panic(err)
   }
   // Print the title of the episode 4x08 (season 4, episode 8)
-  fmt.Println(serie.Episodes[4][8].EpisodeName)
+  fmt.Println(series.GetEpisode(4, 8).EpisodeName)
   // Output: The Mountain and the Viper
 }
 ```
