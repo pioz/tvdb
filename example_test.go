@@ -125,3 +125,13 @@ func ExampleSeries_GetEpisode() {
 	fmt.Println(series.GetEpisode(4, 8).EpisodeName)
 	// Output: The Mountain and the Viper
 }
+
+func ExampleHaveCodeError() {
+	c := tvdb.Client{Apikey: "WRONG APIKEY"}
+	err := c.Login()
+	if err == nil {
+		panic("Impossible!")
+	}
+	fmt.Println(tvdb.HaveCodeError(401, err))
+	// Output: true
+}

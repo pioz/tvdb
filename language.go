@@ -1,6 +1,6 @@
 package tvdb
 
-// Language struct
+// Language struct store all data of a language.
 type Language struct {
 	Abbreviation string `json:"abbreviation"`
 	EnglishName  string `json:"englishName"`

@@ -1,10 +1,6 @@
 package tvdb
 
-import (
-	"fmt"
-)
-
-// Image struct
+// Image struct store all data of an image.
 type Image struct {
 	FileName   string `json:"fileName"`
 	ID         int    `json:"id"`
@@ -15,7 +11,10 @@ type Image struct {
 	Thumbnail  string `json:"thumbnail"`
 }
 
-// ImageURL returns the complete URL of an image
+// ImageURL returns the complete URL of an image. This because the images
+// fileName returned by the TVDB api are relative. So this function simply join
+// the base URL (https://thetvdb.com/banners) with the relative path passed as
+// parameter.
 func ImageURL(fileName string) string {
-	return fmt.Sprintf("https://thetvdb.com/banners/%s", fileName)
+	return "https://thetvdb.com/banners/" + fileName
 }

@@ -1,6 +1,6 @@
 package tvdb
 
-// Episode struct
+// Episode struct store all data of an episode.
 type Episode struct {
 	AbsoluteNumber     int      `json:"absoluteNumber"`
 	AiredEpisodeNumber int      `json:"airedEpisodeNumber"`
@@ -35,7 +35,8 @@ type Episode struct {
 	Writers            []string `json:"writers"`
 }
 
-// Empty return true if the Episode's fields are empty
+// Empty verify if the episode's fields are empty and don't are filled by an api
+// response.
 func (e *Episode) Empty() bool {
 	return e.ID == 0 && e.EpisodeName == ""
 }

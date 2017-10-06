@@ -1,4 +1,13 @@
-// Package tvdb is cool
+// Package tvdb is a wrapper in Go for the TVDB json api version 2. With this
+// package you can make http requests to https://api.thetvdb.com.
+//
+// You can install this package with:
+//
+//   $ go get github.com/pioz/tvdb
+//
+// See also
+//
+// https://api.thetvdb.com/swagger for TVDB api version 2 documentation.
 package tvdb
 
 import (
@@ -13,18 +22,24 @@ import (
 	"strings"
 )
 
-// Client struct
+// Client does the work of perform the REST requests to the TVDB api endpoints.
+// With its methods you can run almost all the requests provided in the TVDB
+// api.
 type Client struct {
-	Apikey   string
+	// The TVDB API key. You can get one here http://thetvdb.com/?tab=apiregister
+	Apikey string
+	// The language with which you want to obtain the data (if not set english is
+	// used)
 	Language string
 	token    string
 	client   http.Client
 }
 
-// BaseURL is the endpoint URL
+// BaseURL where the TVDB api is accessible.
 const BaseURL string = "https://api.thetvdb.com"
 
-// Login perform a post request to retrieve the token from the apikey
+// Login is used to retrieve a valid token which will be used to make any other
+// requests to the TVDB api. The token is stored in the Client struct.
 func (c *Client) Login() error {
 	resp, err := c.performPOSTRequest("/login", map[string]string{"apikey": c.Apikey})
 	if err != nil {
@@ -40,7 +55,7 @@ func (c *Client) Login() error {
 	return nil
 }
 
-// RefreshToken refresh the token
+// RefreshToken is used to refresh the current token.
 func (c *Client) RefreshToken() error {
 	resp, err := c.performGETRequest("/refresh_token", nil)
 	if err != nil {
@@ -56,7 +71,7 @@ func (c *Client) RefreshToken() error {
 	return nil
 }
 
-// GetLanguages returns all avaiable languages
+// GetLanguages returns all avaiable languages, a slice of Language.
 func (c *Client) GetLanguages() ([]Language, error) {
 	resp, err := c.performGETRequest("/languages", nil)
 	if err != nil {
@@ -71,22 +86,25 @@ func (c *Client) GetLanguages() ([]Language, error) {
 	return data.Data, nil
 }
 
-// SearchByName allows the user to search for a series based on the serie name.
+// SearchByName allows to search for a series based on the series name. Returns
+// the slice of the series found.
 func (c *Client) SearchByName(q string) ([]Series, error) {
 	return c.search(url.Values{"name": {q}})
 }
 
-// SearchByImdbID allows the user to search for a series based on the serie name.
+// SearchByImdbID allows to search for a series based on the IMDB id
+// (https://www.imdb.com). Returns the slice of the series found.
 func (c *Client) SearchByImdbID(q string) ([]Series, error) {
 	return c.search(url.Values{"imdbId": {q}})
 }
 
-// SearchByZap2itID allows the user to search for a series based on the serie name.
+// SearchByZap2itID allows to search for a series based on the Zap2it id
+// (http://zap2it.com). Returns the slice of the series found.
 func (c *Client) SearchByZap2itID(q string) ([]Series, error) {
 	return c.search(url.Values{"zap2itId": {q}})
 }
 
-// BestSearch return the best result
+// BestSearch returns the best Series based on the name (q).
 func (c *Client) BestSearch(q string) (Series, error) {
 	res, err := c.SearchByName(q)
 	if err != nil {
@@ -107,7 +125,9 @@ func (c *Client) BestSearch(q string) (Series, error) {
 	return res[0], nil
 }
 
-// GetSeries retrieve all series's fields
+// GetSeries retrieve all series's fields. If a series is returned from a search
+// method it will not have all fields filled. This method fills all fields of
+// the series passed by reference as parameter.
 func (c *Client) GetSeries(s *Series) error {
 	if s.Empty() {
 		return errors.New("The serie is empty")
@@ -126,7 +146,8 @@ func (c *Client) GetSeries(s *Series) error {
 	return nil
 }
 
-// GetSeriesActors retrieve all series's actors
+// GetSeriesActors retrieve all series's actors. Actors slice is accessible from
+// series.Actors struct field.
 func (c *Client) GetSeriesActors(s *Series) error {
 	if s.Empty() {
 		return errors.New("The serie is empty")
@@ -145,7 +166,12 @@ func (c *Client) GetSeriesActors(s *Series) error {
 	return nil
 }
 
-// GetSeriesEpisodes retrieve all series's actors
+// GetSeriesEpisodes retrieve series's episodes. Episodes slice is accessible
+// from series.Episodes struct field but is better obtain episodes using the
+// series's methods GetEpisodes and GetEpisode. The parameter params is the
+// parameters used to perform the request to the api. Valid params are:
+// absoluteNumber, airedSeason, airedEpisode, dvdSeason, dvdEpisode, imdbId,
+// page (100 episodes per page, if page is not passed retrieve all episodes).
 func (c *Client) GetSeriesEpisodes(s *Series, params url.Values) error {
 	if s.Empty() {
 		return errors.New("The serie is empty")
@@ -179,7 +205,8 @@ func (c *Client) GetSeriesEpisodes(s *Series, params url.Values) error {
 	return nil
 }
 
-// GetSeriesSummary retrieve all series's actors
+// GetSeriesSummary retrieve the summary of the episodes and seasons available
+// for the series. Summary is accessible from series.Summary struct field.
 func (c *Client) GetSeriesSummary(s *Series) error {
 	if s.Empty() {
 		return errors.New("The serie is empty")
@@ -198,7 +225,9 @@ func (c *Client) GetSeriesSummary(s *Series) error {
 	return nil
 }
 
-// GetEpisode retrieve all episode's fields
+// GetEpisode retrieve all episode's fields. If an episode is returned from the
+// GetEpisodes method it will not have all fields filled. This method fills all
+// fields of the episode passed by reference as parameter.
 func (c *Client) GetEpisode(e *Episode) error {
 	if e.Empty() {
 		return errors.New("The episode is empty")
@@ -217,27 +246,32 @@ func (c *Client) GetEpisode(e *Episode) error {
 	return nil
 }
 
-// GetSeriesFanartImages return all fanart images of the series
+// GetSeriesFanartImages retrieve fanart images of the series. These images are
+// accessible from series.Images struct field.
 func (c *Client) GetSeriesFanartImages(s *Series) error {
 	return c.getSeriesImages(s, "fanart")
 }
 
-// GetSeriesPosterImages return all poster images of the series
+// GetSeriesPosterImages retrieve poster images of the series. These images are
+// accessible from series.Images struct field.
 func (c *Client) GetSeriesPosterImages(s *Series) error {
 	return c.getSeriesImages(s, "poster")
 }
 
-// GetSeriesSeasonImages return all season images of the series
+// GetSeriesSeasonImages retrieve season images of the series. These images are
+// accessible from series.Images struct field.
 func (c *Client) GetSeriesSeasonImages(s *Series) error {
 	return c.getSeriesImages(s, "season")
 }
 
-// GetSeriesSeasonwideImages return all seasonwide images of the series
+// GetSeriesSeasonwideImages retrieve season wide images of the series. These images are
+// accessible from series.Images struct field.
 func (c *Client) GetSeriesSeasonwideImages(s *Series) error {
 	return c.getSeriesImages(s, "seasonwide")
 }
 
-// GetSeriesSeriesImages return all series images of the series
+// GetSeriesSeriesImages retrieve series images of the series. These images are
+// accessible from series.Images struct field.
 func (c *Client) GetSeriesSeriesImages(s *Series) error {
 	return c.getSeriesImages(s, "series")
 }

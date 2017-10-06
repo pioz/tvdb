@@ -1,6 +1,6 @@
 package tvdb
 
-// Actor struct
+// Actor struct store all data of an actor.
 type Actor struct {
 	ID          int    `json:"id"`
 	Image       string `json:"image"`

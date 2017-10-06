@@ -1,6 +1,6 @@
 package tvdb
 
-// Summary struct
+// Summary struct store all data of a summary.
 type Summary struct {
 	AiredEpisodes string   `json:"airedEpisodes"`
 	AiredSeasons  []string `json:"airedSeasons"`

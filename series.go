@@ -1,6 +1,6 @@
 package tvdb
 
-// Series struct
+// Series struct store all data of an episode.
 type Series struct {
 	Added           string   `json:"added"`
 	AddedBy         int      `json:"addedBy"`
@@ -24,23 +24,29 @@ type Series struct {
 	SiteRatingCount int      `json:"siteRatingCount"`
 	Status          string   `json:"status"`
 	Zap2itID        string   `json:"zap2itId"`
-	Actors          []Actor
-	Episodes        []Episode
-	Summary         Summary
-	Images          []Image
+	// Slice of the series actors, filled with GetSeriesActors method.
+	Actors []Actor
+	// Slice of the series episodes, filled with GetSeriesEpisodes method.
+	Episodes []Episode
+	// Slice of the series summary, filled with GetSeriesSummary method.
+	Summary Summary
+	// Slice of the series images.
+	Images []Image
 }
 
-// Empty return true if the Serie's fields are empty
+// Empty verify if the series's fields are empty and don't are filled by an api
+// response.
 func (s *Series) Empty() bool {
 	return s.ID == 0 && s.SeriesName == ""
 }
 
-// BannerURL return the banner of the series
+// BannerURL returns the image banner url of the series.
 func (s *Series) BannerURL() string {
 	return ImageURL(s.Banner)
 }
 
-// GetSeasonEpisodes return the episode of the series specific season
+// GetSeasonEpisodes select and returns the episodes of the series by season
+// number.
 func (s *Series) GetSeasonEpisodes(season int) []*Episode {
 	episodes := make([]*Episode, 0)
 	for i := range s.Episodes {
@@ -51,7 +57,8 @@ func (s *Series) GetSeasonEpisodes(season int) []*Episode {
 	return episodes
 }
 
-// GetEpisode return a specific episode of the series
+// GetEpisode select and returns a specific episode of the series by season and
+// episode number.
 func (s *Series) GetEpisode(season, number int) *Episode {
 	for i := range s.Episodes {
 		if s.Episodes[i].AiredSeason == season && s.Episodes[i].AiredEpisodeNumber == number {
