@@ -51,7 +51,7 @@ func main() {
 }
 ```
 
-The complete __documentation__ can be found [here](https://pioz.github.io/tvdb).
+The complete __documentation__ can be found [here](https://godoc.org/github.com/pioz/tvdb).
 
 ## Missing REST endpoints
 
