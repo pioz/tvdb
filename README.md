@@ -35,19 +35,19 @@ func main() {
   c := tvdb.Client{Apikey: "YOUR API KEY"}
   err := c.Login()
   if err != nil {
-		panic(err)
-	}
-	series, err := c.BestSearch("Game of Thrones")
-	if err != nil {
-		panic(err)
-	}
-	err = c.GetSeriesEpisodes(&series, nil)
-	if err != nil {
-		panic(err)
-	}
-	// Print the title of the episode 4x08 (season 4, episode 8)
-	fmt.Println(serie.Episodes[4][8].EpisodeName)
-	// Output: The Mountain and the Viper
+    panic(err)
+  }
+  series, err := c.BestSearch("Game of Thrones")
+  if err != nil {
+    panic(err)
+  }
+  err = c.GetSeriesEpisodes(&series, nil)
+  if err != nil {
+    panic(err)
+  }
+  // Print the title of the episode 4x08 (season 4, episode 8)
+  fmt.Println(serie.Episodes[4][8].EpisodeName)
+  // Output: The Mountain and the Viper
 }
 ```
 

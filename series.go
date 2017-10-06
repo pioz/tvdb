@@ -25,7 +25,7 @@ type Series struct {
 	Status          string   `json:"status"`
 	Zap2itID        string   `json:"zap2itId"`
 	Actors          []Actor
-	Episodes        Episodes
+	Episodes        []Episode
 	Summary         Summary
 	Images          []Image
 }
@@ -33,4 +33,30 @@ type Series struct {
 // Empty return true if the Serie's fields are empty
 func (s *Series) Empty() bool {
 	return s.ID == 0 && s.SeriesName == ""
+}
+
+// BannerURL return the banner of the series
+func (s *Series) BannerURL() string {
+	return ImageURL(s.Banner)
+}
+
+// GetSeasonEpisodes return the episode of the series specific season
+func (s *Series) GetSeasonEpisodes(season int) []*Episode {
+	episodes := make([]*Episode, 0)
+	for i := range s.Episodes {
+		if s.Episodes[i].AiredSeason == season {
+			episodes = append(episodes, &s.Episodes[i])
+		}
+	}
+	return episodes
+}
+
+// GetEpisode return a specific episode of the series
+func (s *Series) GetEpisode(season, number int) *Episode {
+	for i := range s.Episodes {
+		if s.Episodes[i].AiredSeason == season && s.Episodes[i].AiredEpisodeNumber == number {
+			return &s.Episodes[i]
+		}
+	}
+	return nil
 }

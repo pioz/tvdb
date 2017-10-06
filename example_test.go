@@ -39,7 +39,7 @@ func ExampleClient_BestSearch() {
 	series, err := c.BestSearch("Game of Thrones")
 	if err != nil {
 		// The request response is a 404: this means no results have been found
-		if tvdb.Error404(err) {
+		if tvdb.HaveCodeError(404, err) {
 			fmt.Println("Series not found")
 		} else {
 			panic(err)
@@ -63,7 +63,7 @@ func ExampleClient_GetSeriesEpisodes() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(series.Episodes[2][10].EpisodeName)
+	fmt.Println(series.GetEpisode(2, 10).EpisodeName)
 	// Output: Valar Morghulis
 }
 
@@ -86,7 +86,7 @@ func ExampleClient_GetSeriesFanartImages() {
 	// Output: https://thetvdb.com/banners/fanart/original/121361-3.jpg
 }
 
-func ExampleEpisodes() {
+func ExampleSeries_GetSeasonEpisodes() {
 	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY")}
 	err := c.Login()
 	if err != nil {
@@ -101,6 +101,27 @@ func ExampleEpisodes() {
 		panic(err)
 	}
 	// Print the title of the episode 4x08 (season 4, episode 8)
-	fmt.Println(series.Episodes[4][8].EpisodeName)
+	for _, ep := range series.GetSeasonEpisodes(1) {
+		fmt.Printf("1x%02d: %s - ", ep.AiredEpisodeNumber, ep.EpisodeName)
+	}
+	// Output: 1x01: Winter Is Coming - 1x02: The Kingsroad - 1x03: Lord Snow - 1x04: Cripples, Bastards, and Broken Things - 1x05: The Wolf and the Lion - 1x06: A Golden Crown - 1x07: You Win or You Die - 1x08: The Pointy End - 1x09: Baelor - 1x10: Fire and Blood -
+}
+
+func ExampleSeries_GetEpisode() {
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY")}
+	err := c.Login()
+	if err != nil {
+		panic(err)
+	}
+	series, err := c.BestSearch("Game of Thrones")
+	if err != nil {
+		panic(err)
+	}
+	err = c.GetSeriesEpisodes(&series, nil)
+	if err != nil {
+		panic(err)
+	}
+	// Print the title of the episode 4x08 (season 4, episode 8)
+	fmt.Println(series.GetEpisode(4, 8).EpisodeName)
 	// Output: The Mountain and the Viper
 }

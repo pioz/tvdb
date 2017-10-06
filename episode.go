@@ -35,9 +35,6 @@ type Episode struct {
 	Writers            []string `json:"writers"`
 }
 
-// Episodes rappresent a map of episodes organized by season and episode number
-type Episodes map[int]map[int]Episode
-
 // Empty return true if the Episode's fields are empty
 func (e *Episode) Empty() bool {
 	return e.ID == 0 && e.EpisodeName == ""

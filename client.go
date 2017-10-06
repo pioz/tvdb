@@ -175,7 +175,7 @@ func (c *Client) GetSeriesEpisodes(s *Series, params url.Values) error {
 			break
 		}
 	}
-	s.Episodes = arrangeEpisodes(episodes)
+	s.Episodes = episodes
 	return nil
 }
 
@@ -307,8 +307,7 @@ func (c *Client) performPOSTRequest(path string, params map[string]string) (*htt
 	}
 	resp, err := c.client.Do(req)
 	if err == nil && resp.StatusCode != 200 {
-		errorMessage := fmt.Sprintf("Get a response with status code %d", resp.StatusCode)
-		return nil, errors.New(errorMessage)
+		return nil, &RequestError{resp.StatusCode}
 	}
 	return resp, err
 }
@@ -327,14 +326,14 @@ func parseResponse(body io.ReadCloser, data interface{}) error {
 	return nil
 }
 
-func arrangeEpisodes(episodes []Episode) Episodes {
-	m := make(Episodes)
-	for _, ep := range episodes {
-		if m[ep.AiredSeason] == nil {
-			m[ep.AiredSeason] = map[int]Episode{ep.AiredEpisodeNumber: ep}
-		} else {
-			m[ep.AiredSeason][ep.AiredEpisodeNumber] = ep
-		}
-	}
-	return m
-}
+// func arrangeEpisodes(episodes []Episode) Episodes {
+// 	m := make(Episodes)
+// 	for _, ep := range episodes {
+// 		if m[ep.AiredSeason] == nil {
+// 			m[ep.AiredSeason] = map[int]Episode{ep.AiredEpisodeNumber: ep}
+// 		} else {
+// 			m[ep.AiredSeason][ep.AiredEpisodeNumber] = ep
+// 		}
+// 	}
+// 	return m
+// }
