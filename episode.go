@@ -12,7 +12,7 @@ type Episode struct {
 	Directors          []string `json:"directors"`
 	DvdChapter         int      `json:"dvdChapter"`
 	DvdDiscid          string   `json:"dvdDiscid"`
-	DvdEpisodeNumber   int      `json:"dvdEpisodeNumber"`
+	DvdEpisodeNumber   float64  `json:"dvdEpisodeNumber"`
 	DvdSeason          int      `json:"dvdSeason"`
 	EpisodeName        string   `json:"episodeName"`
 	Filename           string   `json:"filename"`

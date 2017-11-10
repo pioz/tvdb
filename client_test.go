@@ -101,7 +101,7 @@ func TestClientGetSeriesEpisodes(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.NotEqual(t, 0, len(s.Episodes))
-	assert.Equal(t, 105, len(s.Episodes))
+	assert.Equal(t, 107, len(s.Episodes))
 	assert.Equal(t, "Winter Is Coming", s.GetEpisode(1, 1).EpisodeName)
 	assert.Equal(t, "The Mountain and the Viper", s.GetEpisode(4, 8).EpisodeName)
 	assert.Equal(t, "The Dragon and the Wolf", s.GetEpisode(7, 7).EpisodeName)
@@ -120,7 +120,7 @@ func TestClientGetSeriesSummary(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, "105", s.Summary.AiredEpisodes)
+	assert.Equal(t, "107", s.Summary.AiredEpisodes)
 	assert.Equal(t, 8, len(s.Summary.AiredSeasons))
 }
 
