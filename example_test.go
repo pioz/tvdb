@@ -9,7 +9,7 @@ import (
 )
 
 func ExampleClient_Login() {
-	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Language: "en"}
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Username: os.Getenv("TVDB_USERNAME"), Userkey: os.Getenv("TVDB_USERKEY"), Language: "en"}
 	err := c.Login()
 	if err != nil {
 		panic(err)
@@ -17,7 +17,7 @@ func ExampleClient_Login() {
 }
 
 func ExampleClient_SearchByName() {
-	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Language: "en"}
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Username: os.Getenv("TVDB_USERNAME"), Userkey: os.Getenv("TVDB_USERKEY"), Language: "en"}
 	err := c.Login()
 	if err != nil {
 		panic(err)
@@ -31,7 +31,7 @@ func ExampleClient_SearchByName() {
 }
 
 func ExampleClient_BestSearch() {
-	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Language: "en"}
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Username: os.Getenv("TVDB_USERNAME"), Userkey: os.Getenv("TVDB_USERKEY"), Language: "en"}
 	err := c.Login()
 	if err != nil {
 		panic(err)
@@ -50,7 +50,7 @@ func ExampleClient_BestSearch() {
 }
 
 func ExampleClient_GetSeriesEpisodes() {
-	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Language: "en"}
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Username: os.Getenv("TVDB_USERNAME"), Userkey: os.Getenv("TVDB_USERKEY"), Language: "en"}
 	err := c.Login()
 	if err != nil {
 		panic(err)
@@ -68,7 +68,7 @@ func ExampleClient_GetSeriesEpisodes() {
 }
 
 func ExampleClient_GetSeriesFanartImages() {
-	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Language: "en"}
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Username: os.Getenv("TVDB_USERNAME"), Userkey: os.Getenv("TVDB_USERKEY"), Language: "en"}
 	err := c.Login()
 	if err != nil {
 		panic(err)
@@ -87,7 +87,7 @@ func ExampleClient_GetSeriesFanartImages() {
 }
 
 func ExampleSeries_GetSeasonEpisodes() {
-	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY")}
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Username: os.Getenv("TVDB_USERNAME"), Userkey: os.Getenv("TVDB_USERKEY"), Language: "en"}
 	err := c.Login()
 	if err != nil {
 		panic(err)
@@ -108,7 +108,7 @@ func ExampleSeries_GetSeasonEpisodes() {
 }
 
 func ExampleSeries_GetEpisode() {
-	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY")}
+	c := tvdb.Client{Apikey: os.Getenv("TVDB_APIKEY"), Username: os.Getenv("TVDB_USERNAME"), Userkey: os.Getenv("TVDB_USERKEY"), Language: "en"}
 	err := c.Login()
 	if err != nil {
 		panic(err)
