@@ -17,11 +17,11 @@ Install it yourself as:
 
 ## Usage
 
-First of all you need to get your API key:
+First of all you need to get your API key, User key and User name:
 
 * Register an account on http://thetvdb.com/?tab=register
 * When you are logged register an api key on http://thetvdb.com/?tab=apiregister
-* View your api keys on http://thetvdb.com/?tab=userinfo
+* View your api key, user key and user name on http://thetvdb.com/?tab=userinfo
 
 ```Go
 package main
@@ -32,7 +32,7 @@ import (
 )
 
 func main() {
-  c := tvdb.Client{Apikey: "YOUR API KEY"}
+  c := tvdb.Client{Apikey: "YOUR API KEY", Userkey: "YOUR USER KEY", Username: "YOUR USER NAME"}
   err := c.Login()
   if err != nil {
     panic(err)
