@@ -26,8 +26,10 @@ import (
 // With its methods you can run almost all the requests provided in the TVDB
 // api.
 type Client struct {
-	// The TVDB API key. You can get one here http://thetvdb.com/?tab=apiregister
+	// The TVDB API key, User key, User name. You can get them here http://thetvdb.com/?tab=apiregister
 	Apikey string
+	Userkey string
+	Username string
 	// The language with which you want to obtain the data (if not set english is
 	// used)
 	Language string
@@ -41,7 +43,7 @@ const BaseURL string = "https://api.thetvdb.com"
 // Login is used to retrieve a valid token which will be used to make any other
 // requests to the TVDB api. The token is stored in the Client struct.
 func (c *Client) Login() error {
-	resp, err := c.performPOSTRequest("/login", map[string]string{"apikey": c.Apikey})
+	resp, err := c.performPOSTRequest("/login", map[string]string{"apikey": c.Apikey, "userkey": c.Userkey, "username": c.Username})
 	if err != nil {
 		return err
 	}
