@@ -2,13 +2,20 @@ package tvdb
 
 // Image struct store all data of an image.
 type Image struct {
-	FileName   string `json:"fileName"`
-	ID         int    `json:"id"`
-	KeyType    string `json:"keyType"`
-	LanguageID int    `json:"languageId"`
-	Resolution string `json:"resolution"`
-	SubKey     string `json:"subKey"`
-	Thumbnail  string `json:"thumbnail"`
+	FileName    string `json:"fileName"`
+	ID          int    `json:"id"`
+	KeyType     string `json:"keyType"`
+	LanguageID  int    `json:"languageId"`
+	Resolution  string `json:"resolution"`
+	SubKey      string `json:"subKey"`
+	Thumbnail   string `json:"thumbnail"`
+	RatingsInfo Rating `json:"ratingsInfo"`
+}
+
+// holds image ratings
+type Rating struct {
+	Average float64 `json:"average"`
+	Count   int     `json:"count"`
 }
 
 // ImageURL returns the complete URL of an image. This because the images
