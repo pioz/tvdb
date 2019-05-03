@@ -27,8 +27,8 @@ import (
 // api.
 type Client struct {
 	// The TVDB API key, User key, User name. You can get them here http://thetvdb.com/?tab=apiregister
-	Apikey string
-	Userkey string
+	Apikey   string
+	Userkey  string
 	Username string
 	// The language with which you want to obtain the data (if not set english is
 	// used)
