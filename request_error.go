@@ -19,6 +19,6 @@ func HaveCodeError(code int, err error) bool {
 	if err == nil {
 		return false
 	}
-	serr := err.(*RequestError)
-	return serr.Code == code
+	serr, ok := err.(*RequestError)
+	return ok && serr.Code == code
 }
