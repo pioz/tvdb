@@ -37,7 +37,7 @@ func TestClientGetLanguages(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, 23, len(languages))
-	assert.Equal(t, "Chinese", languages[0].EnglishName)
+	assert.Equal(t, "English", languages[0].EnglishName)
 }
 
 func TestClientSearch(t *testing.T) {
@@ -90,7 +90,7 @@ func TestClientGetSeriesActors(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.NotEqual(t, 0, len(s.Actors))
-	assert.Equal(t, "Ian McElhinney", s.Actors[0].Name)
+	assert.Equal(t, "Michelle Fairley", s.Actors[0].Name)
 }
 
 func TestClientGetSeriesEpisodes(t *testing.T) {
@@ -101,7 +101,7 @@ func TestClientGetSeriesEpisodes(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.NotEqual(t, 0, len(s.Episodes))
-	assert.Equal(t, 107, len(s.Episodes))
+	assert.Equal(t, 123, len(s.Episodes))
 	assert.Equal(t, "Winter Is Coming", s.GetEpisode(1, 1).EpisodeName)
 	assert.Equal(t, "The Mountain and the Viper", s.GetEpisode(4, 8).EpisodeName)
 	assert.Equal(t, "The Dragon and the Wolf", s.GetEpisode(7, 7).EpisodeName)
@@ -120,8 +120,8 @@ func TestClientGetSeriesSummary(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, "107", s.Summary.AiredEpisodes)
-	assert.Equal(t, 8, len(s.Summary.AiredSeasons))
+	assert.Equal(t, "123", s.Summary.AiredEpisodes)
+	assert.Equal(t, 9, len(s.Summary.AiredSeasons))
 }
 
 func TestClientGetSeriesPosterImages(t *testing.T) {
@@ -142,7 +142,6 @@ func TestClientGetEpisode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Empty(t, s.GetEpisode(1, 1).ImdbID)
 	err = c.GetEpisode(s.GetEpisode(1, 1))
 	if err != nil {
 		t.Fatal(err)
@@ -164,7 +163,7 @@ func TestSeriesGetSeasonEpisodes(t *testing.T) {
 func TestSeriesBannerURL(t *testing.T) {
 	c := login(t)
 	s := getSerie(t, c, "Game of Thrones")
-	assert.Equal(t, "https://thetvdb.com/banners/graphical/121361-g19.jpg", s.BannerURL())
+	assert.Equal(t, "https://thetvdb.com/banners/graphical/5c8c227dbd218.jpg", s.BannerURL())
 }
 
 func login(t *testing.T) tvdb.Client {
