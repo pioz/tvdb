@@ -150,9 +150,6 @@ func (c *Client) GetSeries(s *Series) error {
 
 // GetUpdates returns a map of show identifiers updated since epoch
 func (c *Client) GetUpdates(epoch int) ([]Update, error) {
-	// url := fmt.Sprintf("/updated/query?fromTime=%d", epoch)
-	// url := fmt.Sprintf("/updated/query/params")
-	// resp, err := c.performGETRequest(fmt.Sprintf(   url.Values{"keyType": {keyType}})
 	resp, err := c.performGETRequest("/updated/query", url.Values{"fromTime": {strconv.Itoa(epoch)}})
 	if err != nil {
 		return nil, err
