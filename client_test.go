@@ -1,7 +1,6 @@
 package tvdb_test
 
 import (
-	"fmt"
 	"net/url"
 	"os"
 	"testing"
@@ -45,7 +44,7 @@ func TestClientGetUpdates(t *testing.T) {
 	c := login(t)
 	updates, err := c.GetUpdates(1594509621) //Get all updates
 	assert.Nil(t, err)
-	fmt.Printf("%d needs to be updated\n", len(updates.UpdateEntry))
+	t.Logf("%d needs to be updated\n", len(updates.UpdateEntry))
 	assert.Greater(t, len(updates.UpdateEntry), 0, "There should be many shows to update")
 }
 
@@ -53,7 +52,7 @@ func TestClientGetUpdatesOldDate(t *testing.T) {
 	c := login(t)
 	updates, err := c.GetUpdates(0) //Get all updates
 	assert.Nil(t, err)
-	fmt.Printf("%d needs to be updated\n", len(updates.UpdateEntry))
+	t.Logf("%d needs to be updated\n", len(updates.UpdateEntry))
 	assert.Equal(t, len(updates.UpdateEntry), 0, "TVDB does not return all shows updated since time 0, only works over past week")
 }
 
