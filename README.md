@@ -60,8 +60,6 @@ Missing methods are:
 
 * __Series__
     * filter: `GET /series/{id}/filter`
-* __Updates__
-    * updadad: `GET /updated/query`
 * __Users__
     * user: `GET /user`
     * favorites: `GET /user/favorites`

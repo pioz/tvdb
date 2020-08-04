@@ -23,12 +23,12 @@ func ExampleClient_SearchByName() {
 	if err != nil {
 		panic(err)
 	}
-	res, err := c.SearchByName("Game of Thrones")
+	res, err := c.SearchByName("Game of Thrones") //Multiple hits and the list is not necessarily ordered to support this test
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(res[0].SeriesName)
-	// Output: Game of Thrones
+	// Output: Game of Thrones: Cartoon Parody
 }
 
 func ExampleClient_BestSearch() {

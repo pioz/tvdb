@@ -148,6 +148,22 @@ func (c *Client) GetSeries(s *Series) error {
 	return nil
 }
 
+// GetUpdates returns a map of show identifiers updated since epoch
+func (c *Client) GetUpdates(epoch int) ([]Update, error) {
+	resp, err := c.performGETRequest("/updated/query", url.Values{"fromTime": {strconv.Itoa(epoch)}})
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data := new(updatesAPIResponse)
+	err = parseResponse(resp.Body, &data)
+	if err != nil {
+		return nil, err
+	}
+	return data.Data, nil
+}
+
 // GetSeriesActors retrieve all series's actors. Actors slice is accessible from
 // series.Actors struct field.
 func (c *Client) GetSeriesActors(s *Series) error {
