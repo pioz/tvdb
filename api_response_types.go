@@ -35,3 +35,8 @@ type imagesAPIResponse struct {
 type languagesAPIResponse struct {
 	Data []Language `json:"data"`
 }
+
+//Updates contains an slice of show ids with their last updated date in Epoch Time
+type updatesAPIResponse struct {
+	Data []Update `json:"data"`
+}
