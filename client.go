@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Client does the work of perform the REST requests to the TVDB api endpoints.
@@ -40,6 +41,8 @@ type Client struct {
 // BaseURL where the TVDB api is accessible.
 const BaseURL string = "https://api.thetvdb.com"
 
+var tickCh = time.Tick(6 * time.Hour)
+
 // Login is used to retrieve a valid token which will be used to make any other
 // requests to the TVDB api. The token is stored in the Client struct.
 func (c *Client) Login() error {
@@ -54,22 +57,27 @@ func (c *Client) Login() error {
 		return err
 	}
 	c.token = data.Token
+
+	go c.refreshToken()
 	return nil
 }
 
-// RefreshToken is used to refresh the current token.
-func (c *Client) RefreshToken() error {
-	resp, err := c.performGETRequest("/refresh_token", nil)
-	if err != nil {
-		return err
+// refreshToken is used to refresh the current token.
+func (c *Client) refreshToken() error {
+	for range tickCh {
+		resp, err := c.performGETRequest("/refresh_token", nil)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+		data := new(loginAPIResponse)
+		err = parseResponse(resp.Body, &data)
+		if err != nil {
+			return err
+		}
+		c.token = data.Token
 	}
-	defer resp.Body.Close()
-	data := new(loginAPIResponse)
-	err = parseResponse(resp.Body, &data)
-	if err != nil {
-		return err
-	}
-	c.token = data.Token
+
 	return nil
 }
 
