@@ -16,10 +16,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 )
 
 // Client does the work of perform the REST requests to the TVDB api endpoints.
@@ -35,10 +38,14 @@ type Client struct {
 	Language string
 	token    string
 	client   http.Client
+	//mutex to control access to the JWT token
+	mu sync.RWMutex
 }
 
 // BaseURL where the TVDB api is accessible.
 const BaseURL string = "https://api.thetvdb.com"
+
+var tickCh = time.Tick(6 * time.Hour)
 
 // Login is used to retrieve a valid token which will be used to make any other
 // requests to the TVDB api. The token is stored in the Client struct.
@@ -53,11 +60,23 @@ func (c *Client) Login() error {
 	if err != nil {
 		return err
 	}
+
+	c.mu.Lock()
 	c.token = data.Token
+	c.mu.Unlock()
+
+	go func() {
+		for range tickCh {
+			err := c.RefreshToken()
+			if err != nil {
+				fmt.Println("Issue refreshing token ", err) //continue anyway
+			}
+		}
+	}()
 	return nil
 }
 
-// RefreshToken is used to refresh the current token.
+//RefreshToken is used to refresh the current token.
 func (c *Client) RefreshToken() error {
 	resp, err := c.performGETRequest("/refresh_token", nil)
 	if err != nil {
@@ -69,8 +88,20 @@ func (c *Client) RefreshToken() error {
 	if err != nil {
 		return err
 	}
+
+	c.mu.Lock()
+	log.Println("Token before: ", c.token)
 	c.token = data.Token
+	log.Println("Token after: ", c.token) //Shows that the token is updated...
+	c.mu.Unlock()
+
 	return nil
+}
+
+//SetAutoRefreshTokenEvery allows user control over the JWT token refresh rate.
+//The opinionated default is to refresh every 6 hours
+func SetAutoRefreshTokenEvery(d time.Duration) {
+	tickCh = time.Tick(d)
 }
 
 // GetLanguages returns all avaiable languages, a slice of Language.
@@ -335,9 +366,11 @@ func (c *Client) performGETRequest(path string, params url.Values) (*http.Respon
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Accept-Language", c.Language)
+	c.mu.RLock()
 	if c.token != "" {
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	}
+	c.mu.RUnlock()
 	resp, err := c.client.Do(req)
 	if err == nil && resp.StatusCode != 200 {
 		return nil, &RequestError{resp.StatusCode}
@@ -354,9 +387,11 @@ func (c *Client) performPOSTRequest(path string, params map[string]string) (*htt
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Accept-Language", c.Language)
+	c.mu.RLock()
 	if c.token != "" {
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	}
+	c.mu.RUnlock()
 	resp, err := c.client.Do(req)
 	if err == nil && resp.StatusCode != 200 {
 		return nil, &RequestError{resp.StatusCode}
