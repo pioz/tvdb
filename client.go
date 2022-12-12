@@ -28,8 +28,8 @@ import (
 type Client struct {
 	// The TVDB API key, User key, Username. You can get them here http://thetvdb.com/?tab=apiregister
 	Apikey   string
-	Userkey  interface{}
-	Username interface{}
+	Userkey  string
+	Username string
 	// The language with which you want to obtain the data (if not set english is
 	// used)
 	Language string
@@ -43,7 +43,14 @@ const BaseURL string = "https://api.thetvdb.com"
 // Login is used to retrieve a valid token which will be used to make any other
 // requests to the TVDB api. The token is stored in the Client struct.
 func (c *Client) Login() error {
-	resp, err := c.performPOSTRequest("/login", map[string]interface{}{"apikey": c.Apikey, "userkey": c.Userkey, "username": c.Username})
+	loginData := map[string]string{"apikey": c.Apikey}
+	if c.Userkey != "" {
+		loginData["userkey"] = c.Userkey
+	}
+	if c.Username != "" {
+		loginData["username"] = c.Username
+	}
+	resp, err := c.performPOSTRequest("/login", loginData)
 	if err != nil {
 		return err
 	}
@@ -345,7 +352,7 @@ func (c *Client) performGETRequest(path string, params url.Values) (*http.Respon
 	return resp, err
 }
 
-func (c *Client) performPOSTRequest(path string, params map[string]interface{}) (*http.Response, error) {
+func (c *Client) performPOSTRequest(path string, params map[string]string) (*http.Response, error) {
 	jsonMarshal, _ := json.Marshal(params)
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s", BaseURL, path), bytes.NewBuffer(jsonMarshal))
 	if err != nil {
