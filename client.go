@@ -3,9 +3,9 @@
 //
 // You can install this package with:
 //
-//   $ go get github.com/pioz/tvdb
+//	$ go get github.com/pioz/tvdb
 //
-// See also
+// # See also
 //
 // https://api.thetvdb.com/swagger for TVDB api version 2 documentation.
 package tvdb
@@ -24,9 +24,9 @@ import (
 
 // Client does the work of perform the REST requests to the TVDB api endpoints.
 // With its methods you can run almost all the requests provided in the TVDB
-// api.
+// api.  It is engough to specify the Apikey, if you leave the Userkey and Username as nil.
 type Client struct {
-	// The TVDB API key, User key, User name. You can get them here http://thetvdb.com/?tab=apiregister
+	// The TVDB API key, User key, Username. You can get them here http://thetvdb.com/?tab=apiregister
 	Apikey   string
 	Userkey  string
 	Username string
@@ -43,7 +43,14 @@ const BaseURL string = "https://api.thetvdb.com"
 // Login is used to retrieve a valid token which will be used to make any other
 // requests to the TVDB api. The token is stored in the Client struct.
 func (c *Client) Login() error {
-	resp, err := c.performPOSTRequest("/login", map[string]string{"apikey": c.Apikey, "userkey": c.Userkey, "username": c.Username})
+	loginData := map[string]string{"apikey": c.Apikey}
+	if c.Userkey != "" {
+		loginData["userkey"] = c.Userkey
+	}
+	if c.Username != "" {
+		loginData["username"] = c.Username
+	}
+	resp, err := c.performPOSTRequest("/login", loginData)
 	if err != nil {
 		return err
 	}
@@ -132,7 +139,7 @@ func (c *Client) BestSearch(q string) (Series, error) {
 // the series passed by reference as parameter.
 func (c *Client) GetSeries(s *Series) error {
 	if s.Empty() {
-		return errors.New("The serie is empty")
+		return errors.New("the serie is empty")
 	}
 	resp, err := c.performGETRequest(fmt.Sprintf("/series/%d", s.ID), nil)
 	if err != nil {
@@ -168,7 +175,7 @@ func (c *Client) GetUpdates(epoch int) ([]Update, error) {
 // series.Actors struct field.
 func (c *Client) GetSeriesActors(s *Series) error {
 	if s.Empty() {
-		return errors.New("The serie is empty")
+		return errors.New("the serie is empty")
 	}
 	resp, err := c.performGETRequest(fmt.Sprintf("/series/%d/actors", s.ID), nil)
 	if err != nil {
@@ -192,7 +199,7 @@ func (c *Client) GetSeriesActors(s *Series) error {
 // page (100 episodes per page, if page is not passed retrieve all episodes).
 func (c *Client) GetSeriesEpisodes(s *Series, params url.Values) error {
 	if s.Empty() {
-		return errors.New("The serie is empty")
+		return errors.New("the serie is empty")
 	}
 	episodes := make([]Episode, 0)
 	var (
@@ -227,7 +234,7 @@ func (c *Client) GetSeriesEpisodes(s *Series, params url.Values) error {
 // for the series. Summary is accessible from series.Summary struct field.
 func (c *Client) GetSeriesSummary(s *Series) error {
 	if s.Empty() {
-		return errors.New("The serie is empty")
+		return errors.New("the serie is empty")
 	}
 	resp, err := c.performGETRequest(fmt.Sprintf("/series/%d/episodes/summary", s.ID), nil)
 	if err != nil {
@@ -248,7 +255,7 @@ func (c *Client) GetSeriesSummary(s *Series) error {
 // fields of the episode passed by reference as parameter.
 func (c *Client) GetEpisode(e *Episode) error {
 	if e.Empty() {
-		return errors.New("The episode is empty")
+		return errors.New("the episode is empty")
 	}
 	resp, err := c.performGETRequest(fmt.Sprintf("/episodes/%d", e.ID), nil)
 	if err != nil {
@@ -296,7 +303,7 @@ func (c *Client) GetSeriesSeriesImages(s *Series) error {
 
 func (c *Client) getSeriesImages(s *Series, keyType string) error {
 	if s.Empty() {
-		return errors.New("The serie is empty")
+		return errors.New("the serie is empty")
 	}
 	resp, err := c.performGETRequest(fmt.Sprintf("/series/%d/images/query", s.ID), url.Values{"keyType": {keyType}})
 	if err != nil {
@@ -346,8 +353,8 @@ func (c *Client) performGETRequest(path string, params url.Values) (*http.Respon
 }
 
 func (c *Client) performPOSTRequest(path string, params map[string]string) (*http.Response, error) {
-	json, _ := json.Marshal(params)
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s", BaseURL, path), bytes.NewBuffer(json))
+	jsonMarshal, _ := json.Marshal(params)
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s", BaseURL, path), bytes.NewBuffer(jsonMarshal))
 	if err != nil {
 		return nil, err
 	}
