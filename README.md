@@ -22,6 +22,7 @@ First of all you need to get your API key, User key and User name:
 * Register an account on http://thetvdb.com/?tab=register
 * When you are logged register an api key on http://thetvdb.com/?tab=apiregister
 * View your api key, user key and user name on http://thetvdb.com/?tab=userinfo
+* The api can be logged in only with the API key, just don't specify the Userkey and Username
 
 ```Go
 package main
